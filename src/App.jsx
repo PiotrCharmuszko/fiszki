@@ -100,26 +100,26 @@ export default function App() {
   };
 
   const addZestaw = async () => {
-    if (!newZestaw.trim() || !user) return;
+  if (!newZestaw.trim() || !user) return;
+  
+  try {
+    const { error } = await supabase
+      .from("zestawy")
+      .insert([{ 
+        nazwa_zestawu: newZestaw,
+        user_id: user.id 
+      }]);
     
-    try {
-      const { data, error } = await supabase
-        .from("zestawy")
-        .insert([{ 
-          nazwa_zestawu: newZestaw,
-          user_id: String(user.id)
-        }])
-        .select()
-        .single();
-      
-      if (error) throw error;
-      setZestawy([...zestawy, data]);
-      setNewZestaw("");
-    } catch (error) {
-      console.error("Błąd dodawania zestawu:", error.message);
-      alert("Nie udało się dodać zestawu");
-    }
-  };
+    if (error) throw error;
+    
+    await fetchZestawy(user.id);
+    
+    setNewZestaw("");
+  } catch (error) {
+    console.error("Błąd dodawania zestawu:", error.message);
+    alert("Nie udało się dodać zestawu");
+  }
+};
 
   const addFiszka = async () => {
     if (!newFiszka.slowo || !newFiszka.definicja || !newFiszka.zdanie) {
@@ -210,10 +210,10 @@ export default function App() {
         <h1>Fiszki</h1>
         <div className="header-right">
           <span className="user-email">{user.email}</span>
-          <button onClick={logout} className="logout-btn">Wyloguj</button>
-          <div className="user-info">
+           <div className="user-info">
             Zalogowany jako: <strong>{user?.username}</strong>
           </div>
+          <button onClick={logout} className="logout-btn">Wyloguj</button>       
           <button 
             className="settings-btn"
             onClick={() => setShowSettings(!showSettings)}
