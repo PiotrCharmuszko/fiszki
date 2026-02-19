@@ -315,25 +315,27 @@ input::placeholder {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #020617;
+  background: #020617;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .login-panel {
-  background-color: rgba(0,0,0,0.3);
+  background: #0f172a;
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  border: 1px solid #1e293b;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   width: 100%;
   max-width: 400px;
 }
 
 .login-panel h2 {
   margin-bottom: 30px;
-  color: #333;
+  color: #e5e7eb;
   text-align: center;
+  font-size: 1.8rem;
 }
 
 .login-panel form {
@@ -344,79 +346,69 @@ input::placeholder {
 
 .login-panel input {
   padding: 12px 15px;
-  border: 2px solid #eee;
+  background: #020617;
+  border: 1px solid #1e293b;
   border-radius: 10px;
   font-size: 16px;
+  color: #e5e7eb;
   transition: border-color 0.3s;
 }
 
 .login-panel input:focus {
-  border-color: #667eea;
+  border-color: #38bdf8;
   outline: none;
 }
 
+.login-panel input::placeholder {
+  color: #64748b;
+}
+
 .login-panel button[type="submit"] {
-  background: #667eea;
-  color: white;
+  background: #38bdf8;
+  color: #020617;
   border: none;
   padding: 12px;
   border-radius: 10px;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
 .login-panel button[type="submit"]:hover {
-  background: #5a67d8;
+  background: #0ea5e9;
+}
+
+.login-panel button[type="submit"]:disabled {
+  background: #334155;
+  color: #94a3b8;
+  cursor: not-allowed;
 }
 
 .login-panel .switch-btn {
   background: none;
   border: none;
-  color: #667eea;
+  color: #38bdf8;
   margin-top: 20px;
   cursor: pointer;
   width: 100%;
   text-align: center;
+  font-size: 14px;
+}
+
+.login-panel .switch-btn:hover {
+  color: #0ea5e9;
 }
 
 .error-message {
-  color: #e53e3e;
+  color: #f87171;
   font-size: 14px;
   text-align: center;
   margin-bottom: 10px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.user-email {
-  color: #666;
-  font-size: 14px;
-}
-
-.logout-btn {
-  background: #f56565;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.logout-btn:hover {
-  background: #e53e3e;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  font-size: 20px;
-  color: #667eea;
+  padding: 8px;
+  background: rgba(248, 113, 113, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
 
