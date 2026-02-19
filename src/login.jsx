@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { supabase } from './lib/supabase'
+import { supabase } from '../lib/supabase'
 
 export default function Login({ onLogin }) {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [isRegister, setIsRegister] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -10,27 +10,50 @@ export default function Login({ onLogin }) {
 
   const handleAuth = async (e) => {
     e.preventDefault()
+    
+    if (!username.trim() || !password.trim()) {
+      setError('Wypełnij wszystkie pola')
+      return
+    }
+
     setLoading(true)
     setError('')
 
     try {
       if (isRegister) {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { username: email.split('@')[0] }
-          }
-        })
+        const { data: existing } = await supabase
+          .from('users')
+          .select('id')
+          .eq('username', username)
+          .maybeSingle()
+        
+        if (existing) {
+          throw new Error('Użytkownik już istnieje')
+        }
+
+        const { data, error } = await supabase
+          .from('users')
+          .insert([{ 
+            username, 
+            password: password 
+          }])
+          .select()
+          .single()
+        
         if (error) throw error
-        alert('Sprawdź email aby potwierdzić rejestrację!')
+        onLogin({ id: data.id, username: data.username })
       } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        })
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('username', username)
+          .eq('password', password)
+          .maybeSingle()
+        
         if (error) throw error
-        onLogin(data.user)
+        if (!data) throw new Error('Zła nazwa użytkownika lub hasło')
+        
+        onLogin({ id: data.id, username: data.username })
       }
     } catch (error) {
       setError(error.message)
