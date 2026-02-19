@@ -26,16 +26,18 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState({});
 
-  useEffect(() => {
-    checkUser();
-    
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-      if (session?.user) fetchZestawy(session.user.id);
-    });
-
-    return () => authListener?.subscription.unsubscribe();
-  }, []);
+ useEffect(() => {
+  const checkUser = () => {
+    const savedUser = localStorage.getItem('fiszki_user')
+    if (savedUser) {
+      setUser(JSON.parse(savedUser))
+      fetchZestawy(JSON.parse(savedUser).id)
+    }
+    setLoading(false)
+  }
+  
+  checkUser()
+}, [])
 
   const checkUser = async () => {
     const user = await getCurrentUser();
@@ -178,12 +180,12 @@ export default function App() {
     setSettings(newSettings);
   };
 
-  const logout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setZestawy([]);
-    setSelectedZestaw(null);
-    setFiszki([]);
+  const logout = () => {
+    localStorage.removeItem('fiszki_user')
+    setUser(null)
+    setZestawy([])
+    setSelectedZestaw(null)
+    setFiszki([])
   };
 
   if (loading) return <div className="loading">Ładowanie...</div>;

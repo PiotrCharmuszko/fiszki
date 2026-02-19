@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { supabase } from './lib/supabase'
 
 export default function Login({ onLogin }) {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [isRegister, setIsRegister] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -11,7 +11,7 @@ export default function Login({ onLogin }) {
   const handleAuth = async (e) => {
     e.preventDefault()
     
-    if (!email.trim() || !password.trim()) {
+    if (!username.trim() || !password.trim()) {
       setError('Wypełnij wszystkie pola')
       return
     }
@@ -21,10 +21,11 @@ export default function Login({ onLogin }) {
 
     try {
       if (isRegister) {
+        // REJESTRACJA
         const { data: existing } = await supabase
           .from('users')
           .select('id')
-          .eq('username', email)
+          .eq('username', username)
           .maybeSingle()
         
         if (existing) {
@@ -33,25 +34,33 @@ export default function Login({ onLogin }) {
 
         const { data, error } = await supabase
           .from('users')
-          .insert([{ 
-            username: email,
-            password: password
-          }])
+          .insert([{ username, password }])
           .select()
           .single()
         
         if (error) throw error
+
+        localStorage.setItem('fiszki_user', JSON.stringify({
+          id: data.id,
+          username: data.username
+        }))
+        
         onLogin({ id: data.id, username: data.username })
       } else {
         const { data, error } = await supabase
           .from('users')
           .select('*')
-          .eq('username', email)
+          .eq('username', username)
           .eq('password', password)
           .maybeSingle()
         
         if (error) throw error
         if (!data) throw new Error('Zła nazwa użytkownika lub hasło')
+        
+        localStorage.setItem('fiszki_user', JSON.stringify({
+          id: data.id,
+          username: data.username
+        }))
         
         onLogin({ id: data.id, username: data.username })
       }
@@ -73,8 +82,8 @@ export default function Login({ onLogin }) {
           <input
             type="text"
             placeholder="Nazwa użytkownika"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
           <input
