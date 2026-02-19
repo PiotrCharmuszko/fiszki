@@ -211,6 +211,9 @@ export default function App() {
         <div className="header-right">
           <span className="user-email">{user.email}</span>
           <button onClick={logout} className="logout-btn">Wyloguj</button>
+          <div className="user-info">
+            Zalogowany jako: <strong>{user?.username}</strong>
+          </div>
           <button 
             className="settings-btn"
             onClick={() => setShowSettings(!showSettings)}

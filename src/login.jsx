@@ -21,16 +21,23 @@ export default function Login({ onLogin }) {
 
     try {
       if (isRegister) {
-        const { data: existing } = await supabase
+        // REJESTRACJA
+        console.log('🔍 Sprawdzam czy użytkownik istnieje:', username)
+        
+        const { data: existing, error: checkError } = await supabase
           .from('users')
           .select('id')
           .eq('username', username)
           .maybeSingle()
         
+        if (checkError) throw checkError
+        
         if (existing) {
           throw new Error('Użytkownik już istnieje')
         }
 
+        console.log('📝 Dodaję nowego użytkownika:', username)
+        
         const { data, error } = await supabase
           .from('users')
           .insert([{ username, password }])
@@ -38,12 +45,20 @@ export default function Login({ onLogin }) {
           .single()
         
         if (error) throw error
-       
+        
+        console.log('✅ Użytkownik dodany:', data)
+        
+        // ZAPISZ W localStorage
         const userData = { id: data.id, username: data.username }
         localStorage.setItem('fiszki_user', JSON.stringify(userData))
+        console.log('💾 Zapisano w localStorage:', localStorage.getItem('fiszki_user'))
         
+        // ZALOGUJ
         onLogin(userData)
       } else {
+        // LOGOWANIE
+        console.log('🔍 Szukam użytkownika:', username)
+        
         const { data, error } = await supabase
           .from('users')
           .select('*')
@@ -52,14 +67,24 @@ export default function Login({ onLogin }) {
           .maybeSingle()
         
         if (error) throw error
-        if (!data) throw new Error('Zła nazwa użytkownika lub hasło')
         
+        if (!data) {
+          console.log('❌ Nie znaleziono użytkownika')
+          throw new Error('Zła nazwa użytkownika lub hasło')
+        }
+        
+        console.log('✅ Znaleziono użytkownika:', data)
+        
+        // ZAPISZ W localStorage
         const userData = { id: data.id, username: data.username }
         localStorage.setItem('fiszki_user', JSON.stringify(userData))
+        console.log('💾 Zapisano w localStorage:', localStorage.getItem('fiszki_user'))
         
+        // ZALOGUJ
         onLogin(userData)
       }
     } catch (error) {
+      console.error('❌ Błąd:', error.message)
       setError(error.message)
     } finally {
       setLoading(false)
