@@ -26,18 +26,28 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState({});
 
- useEffect(() => {
-  const checkUser = () => {
+  useEffect(() => {
+    const checkUser = () => {
+      const savedUser = localStorage.getItem('fiszki_user')
+      if (savedUser) {
+        setUser(JSON.parse(savedUser))
+        fetchZestawy(JSON.parse(savedUser).id)
+      }
+      setLoading(false)
+    }
+    
+    checkUser()
+  }, [])
+
+  useEffect(() => {
     const savedUser = localStorage.getItem('fiszki_user')
     if (savedUser) {
-      setUser(JSON.parse(savedUser))
-      fetchZestawy(JSON.parse(savedUser).id)
+      const userData = JSON.parse(savedUser)
+      setUser(userData)
+      fetchZestawy(userData.id)
     }
     setLoading(false)
-  }
-  
-  checkUser()
-}, [])
+  }, [])
 
   const checkUser = async () => {
     const user = await getCurrentUser();

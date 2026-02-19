@@ -21,7 +21,6 @@ export default function Login({ onLogin }) {
 
     try {
       if (isRegister) {
-        // REJESTRACJA
         const { data: existing } = await supabase
           .from('users')
           .select('id')
@@ -39,13 +38,11 @@ export default function Login({ onLogin }) {
           .single()
         
         if (error) throw error
-
-        localStorage.setItem('fiszki_user', JSON.stringify({
-          id: data.id,
-          username: data.username
-        }))
+       
+        const userData = { id: data.id, username: data.username }
+        localStorage.setItem('fiszki_user', JSON.stringify(userData))
         
-        onLogin({ id: data.id, username: data.username })
+        onLogin(userData)
       } else {
         const { data, error } = await supabase
           .from('users')
@@ -57,12 +54,10 @@ export default function Login({ onLogin }) {
         if (error) throw error
         if (!data) throw new Error('Zła nazwa użytkownika lub hasło')
         
-        localStorage.setItem('fiszki_user', JSON.stringify({
-          id: data.id,
-          username: data.username
-        }))
+        const userData = { id: data.id, username: data.username }
+        localStorage.setItem('fiszki_user', JSON.stringify(userData))
         
-        onLogin({ id: data.id, username: data.username })
+        onLogin(userData)
       }
     } catch (error) {
       setError(error.message)
