@@ -207,7 +207,6 @@ export default function App() {
   return (
     <div className={`App ${settings.darkMode ? "dark-mode" : ""}`}>
       <header>
-        <h1>Fiszki</h1>
         <div className="header-right">
           <span className="user-email">{user.email}</span>
            <div className="user-info">
@@ -346,7 +345,7 @@ export default function App() {
               )}
             </div>
           ) : (
-            <p>Wybierz zestaw aby rozpocząć.</p>
+            <p>Wybierz zestaw aby rozpocząć || Odśwież stronę jeśli nie widzisz zestawów</p>
           )}
         </section>
       </main>
