@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { supabase } from './lib/supabase'
 
 export default function Login({ onLogin }) {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isRegister, setIsRegister] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -11,7 +11,7 @@ export default function Login({ onLogin }) {
   const handleAuth = async (e) => {
     e.preventDefault()
     
-    if (!username.trim() || !password.trim()) {
+    if (!email.trim() || !password.trim()) {
       setError('Wypełnij wszystkie pola')
       return
     }
@@ -24,7 +24,7 @@ export default function Login({ onLogin }) {
         const { data: existing } = await supabase
           .from('users')
           .select('id')
-          .eq('username', username)
+          .eq('username', email)
           .maybeSingle()
         
         if (existing) {
@@ -34,8 +34,8 @@ export default function Login({ onLogin }) {
         const { data, error } = await supabase
           .from('users')
           .insert([{ 
-            username, 
-            password: password 
+            username: email,
+            password: password
           }])
           .select()
           .single()
@@ -46,7 +46,7 @@ export default function Login({ onLogin }) {
         const { data, error } = await supabase
           .from('users')
           .select('*')
-          .eq('username', username)
+          .eq('username', email)
           .eq('password', password)
           .maybeSingle()
         
@@ -71,8 +71,8 @@ export default function Login({ onLogin }) {
         
         <form onSubmit={handleAuth}>
           <input
-            type="email"
-            placeholder="Email"
+            type="text"
+            placeholder="Nazwa użytkownika"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
