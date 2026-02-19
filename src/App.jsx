@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { supabase, getCurrentUser } from "./lib/supabase";
-import Login from "./components/Login";
+import Login from "./login";
 
 export default function App() {
   const [user, setUser] = useState(null);
