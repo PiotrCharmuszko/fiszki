@@ -26,7 +26,6 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState({});
 
-  // Sprawdź czy użytkownik jest zalogowany
   useEffect(() => {
     checkUser();
     
@@ -45,7 +44,6 @@ export default function App() {
     setLoading(false);
   };
 
-  // Pobierz zestawy TYLKO zalogowanego użytkownika
   const fetchZestawy = async (userId) => {
     try {
       const { data, error } = await supabase
@@ -61,7 +59,6 @@ export default function App() {
     }
   };
 
-  // Pobierz fiszki dla wybranego zestawu
   const fetchFiszki = async (id_zestawu) => {
     setSelectedZestaw(id_zestawu);
     try {
@@ -73,7 +70,6 @@ export default function App() {
       
       if (error) throw error;
       
-      // Mapuj front/back na slowo/definicja
       const przeksztalcone = (data || []).map(f => ({
         id_fiszki: f.id_fiszki,
         id_zestawu: f.id_zestawu,
@@ -91,7 +87,6 @@ export default function App() {
     }
   };
 
-  // Dodaj zestaw z user_id
   const addZestaw = async () => {
     if (!newZestaw.trim() || !user) return;
     
@@ -100,7 +95,7 @@ export default function App() {
         .from("zestawy")
         .insert([{ 
           nazwa_zestawu: newZestaw,
-          user_id: user.id 
+          user_id: String(user.id)
         }])
         .select()
         .single();
@@ -114,7 +109,6 @@ export default function App() {
     }
   };
 
-  // Dodaj fiszkę
   const addFiszka = async () => {
     if (!newFiszka.slowo || !newFiszka.definicja || !newFiszka.zdanie) {
       alert("Wszystkie pola są wymagane!");
